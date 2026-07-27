@@ -1,0 +1,80 @@
+name: Publish to Launchpad PPA
+on:
+  push:
+    tags:
+      - 'v*'  # Triggers on tags like v1.0.1, v1.0.2, etc.
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      PPA_TARGET: "ppa:unios-team/ppa"
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check PPA signing key is configured
+        id: key-check
+        run: |
+          if [ -z "${{ secrets.PPA_GPG_KEY }}" ]; then
+            echo "::warning::No PPA_GPG_KEY repo secret is configured. Skipping build/publish — add PPA_GPG_KEY and PPA_GPG_KEY_PASSPHRASE secrets to enable this."
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install Debian packaging tools
+        if: steps.key-check.outputs.configured == 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            devscripts \
+            debhelper \
+            dh-make \
+            dput \
+            gnupg
+
+      - name: Import GPG key for signing
+        if: steps.key-check.outputs.configured == 'true'
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.PPA_GPG_KEY }}
+          passphrase: ${{ secrets.PPA_GPG_KEY_PASSPHRASE }}
+
+      - name: Derive maintainer identity from debian/changelog
+        if: steps.key-check.outputs.configured == 'true'
+        run: |
+          # Uses whoever last ran `dch` and committed an entry — no
+          # hardcoded person, so any contributor with signing rights
+          # can cut a release under their own name.
+          MAINTAINER="$(dpkg-parsechangelog -S Maintainer)"
+          NAME="${MAINTAINER% <*}"
+          EMAIL="$(echo "$MAINTAINER" | sed -n 's/.*<\(.*\)>.*/\1/p')"
+          echo "MAINTAINER_NAME=$NAME" >> "$GITHUB_ENV"
+          echo "MAINTAINER_EMAIL=$EMAIL" >> "$GITHUB_ENV"
+          echo "DEBFULLNAME=$NAME" >> "$GITHUB_ENV"
+          echo "DEBEMAIL=$EMAIL" >> "$GITHUB_ENV"
+
+      - name: Configure Git identity
+        if: steps.key-check.outputs.configured == 'true'
+        run: |
+          git config user.name "$MAINTAINER_NAME"
+          git config user.email "$MAINTAINER_EMAIL"
+
+      - name: Build Debian Source Package
+        if: steps.key-check.outputs.configured == 'true'
+        run: |
+          # Clean untracked files that might interfere with debuild
+          git clean -fdx -e .github
+
+          # Build source package (-S). -sa is a no-op here since this is
+          # a native package (no separate orig tarball) but harmless to keep.
+          debuild -S -sa -k"$MAINTAINER_EMAIL"
+
+      - name: Upload to Launchpad PPA via dput
+        if: steps.key-check.outputs.configured == 'true'
+        run: |
+          CHANGES_FILE=$(ls ../*_source.changes | head -n 1)
+          echo "Uploading $CHANGES_FILE to $PPA_TARGET..."
+          dput -f "$PPA_TARGET" "$CHANGES_FILE"
