@@ -1,0 +1,23 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+    configure)
+        SCRIPT="/usr/share/unios-desktop-settings/src/initial_desktop_setup.sh"
+        if [ -f "$SCRIPT" ]; then
+            bash "$SCRIPT"
+        fi
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+#DEBHELPER#
+
+exit 0

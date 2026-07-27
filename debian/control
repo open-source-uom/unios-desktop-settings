@@ -1,0 +1,16 @@
+Source: unios-desktop-settings
+Section: misc
+Priority: optional
+Maintainer: Apostolos Chalis <achalis@csd.auth.gr>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.6.2
+Homepage: https://github.com/unios-team/unios-desktop-settings
+
+Package: unios-desktop-settings
+Architecture: all
+Depends: ${misc:Depends}
+Description: UniOS default desktop settings and branding
+ Applies the default UniOS wallpaper and Breeze Dark theme to KDE
+ Plasma, configures skel defaults for new user accounts, and
+ removes the plasma-welcome first-run screen. Runs automatically
+ on install via the package's postinst script.
