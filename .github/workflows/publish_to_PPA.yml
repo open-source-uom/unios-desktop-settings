@@ -72,7 +72,9 @@ jobs:
           if [ "$GITHUB_REF_TYPE" = "tag" ]; then
             CHANGELOG_VERSION="$(dpkg-parsechangelog -S Version)"
             TAG_VERSION="${GITHUB_REF_NAME#v}"
-            if [ "$CHANGELOG_VERSION" != "$TAG_VERSION" ]; then
+            # Git refnames can't contain '~', so a version like 1.0.2~test3
+            # is tagged v1.0.2-test3. Normalise before comparing.
+            if [ "${CHANGELOG_VERSION//\~/-}" != "$TAG_VERSION" ]; then
               echo "::error::debian/changelog is at $CHANGELOG_VERSION but the tag is $GITHUB_REF_NAME. Launchpad rejects re-uploads of an existing version."
               exit 1
             fi
@@ -90,7 +92,7 @@ jobs:
           # Clean untracked files that might interfere with debuild
           git clean -fdx -e .github
           # Build source package (-S). -d skips the build-dependency check:
-          # a source-only build doesn't compile anything, and the Qt6 build
+          # a source-only build doesn't compile anything, and the build
           # deps aren't installed on the runner. -sa is a no-op here since
           # this is a native package (no separate orig tarball).
           # Sign with the fingerprint of the key we actually imported.
