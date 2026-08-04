@@ -1,8 +1,8 @@
-unios-desktop-settings (1.0.2~test1) UNRELEASED; urgency=medium
+unios-desktop-settings (1.0.2~test2) noble; urgency=medium
 
   * CI test upload - safe to delete from Launchpad.
 
- -- Ioannis Michadasis <johnmichadasis@gmail.com>  Mon, 27 Jul 2026 16:05:58 +0300
+ -- Ioannis Michadasis <johnmichadasis@gmail.com>  Tue, 04 Aug 2026 14:32:11 +0300
 
 unios-desktop-settings (1.0.1) noble; urgency=medium
 
