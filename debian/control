@@ -9,6 +9,8 @@ Homepage: https://github.com/unios-team/unios-desktop-settings
 Package: unios-desktop-settings
 Architecture: all
 Depends: ${misc:Depends}
+Conflicts: plasma-welcome
+Replaces: plasma-welcome
 Description: UniOS default desktop settings and branding
  Applies the default UniOS wallpaper and Breeze Dark theme to KDE
  Plasma, configures skel defaults for new user accounts, and

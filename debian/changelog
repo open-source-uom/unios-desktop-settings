@@ -1,3 +1,14 @@
+unios-desktop-settings (1.0.2~test4) noble; urgency=medium
+
+  * Install resources/unios.jpg -- it was commented out of debian/*.install,
+    so the wallpaper was never shipped.
+  * Replace the apt-get calls in the setup script with Conflicts/Replaces on
+    plasma-welcome; apt-get cannot run while dpkg holds the frontend lock.
+  * Stop editing plasma-workspace's main.xml; the /etc/skel config already
+    sets the wallpaper for new users.
+
+ -- Ioannis Michadasis <johnmichadasis@gmail.com>  Tue, 04 Aug 2026 15:20:00 +0300
+
 unios-desktop-settings (1.0.2~test3) noble; urgency=medium
 
   * CI test upload - safe to delete from Launchpad.

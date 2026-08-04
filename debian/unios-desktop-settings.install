@@ -1,6 +1,3 @@
 src/initial_desktop_setup.sh usr/share/unios-desktop-settings/src/
-
-# This repo's script expects resources/unios.jpg to exist as a sibling
-# of src/ (see ../resources/unios.jpg in initial_desktop_setup.sh).
-# It isn't in this upload yet -- add it to the repo, then uncomment:
-# resources/unios.jpg usr/share/unios-desktop-settings/resources/
+resources/unios.jpg usr/share/unios-desktop-settings/resources/
+resources/unios.png usr/share/unios-desktop-settings/resources/
