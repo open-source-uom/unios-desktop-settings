@@ -1,9 +1,11 @@
 name: Publish to Launchpad PPA
+
 on:
   push:
     tags:
       - 'v*'  # Triggers on tags like v1.0.1, v1.0.2, etc.
   workflow_dispatch: # Allows manual trigger from GitHub UI
+  
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -15,8 +17,10 @@ jobs:
 
       - name: Check PPA signing key is configured
         id: key-check
+        env:
+          PPA_GPG_KEY: ${{ secrets.PPA_GPG_KEY }}
         run: |
-          if [ -z "${{ secrets.PPA_GPG_KEY }}" ]; then
+          if [ -z "$PPA_GPG_KEY" ]; then
             echo "::warning::No PPA_GPG_KEY repo secret is configured. Skipping build/publish — add PPA_GPG_KEY and PPA_GPG_KEY_PASSPHRASE secrets to enable this."
             echo "configured=false" >> "$GITHUB_OUTPUT"
           else
@@ -36,6 +40,7 @@ jobs:
             gnupg
 
       - name: Import GPG key for signing
+        id: gpg
         if: steps.key-check.outputs.configured == 'true'
         uses: crazy-max/ghaction-import-gpg@v6
         with:
@@ -56,6 +61,23 @@ jobs:
           echo "DEBFULLNAME=$NAME" >> "$GITHUB_ENV"
           echo "DEBEMAIL=$EMAIL" >> "$GITHUB_ENV"
 
+      - name: Validate debian/changelog before uploading
+        if: steps.key-check.outputs.configured == 'true'
+        run: |
+          DIST="$(dpkg-parsechangelog -S Distribution)"
+          if [ "$DIST" = "UNRELEASED" ]; then
+            echo "::error::debian/changelog distribution is UNRELEASED. Set it to an Ubuntu series (e.g. noble) — Launchpad will reject this upload."
+            exit 1
+          fi
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            CHANGELOG_VERSION="$(dpkg-parsechangelog -S Version)"
+            TAG_VERSION="${GITHUB_REF_NAME#v}"
+            if [ "$CHANGELOG_VERSION" != "$TAG_VERSION" ]; then
+              echo "::error::debian/changelog is at $CHANGELOG_VERSION but the tag is $GITHUB_REF_NAME. Launchpad rejects re-uploads of an existing version."
+              exit 1
+            fi
+          fi
+
       - name: Configure Git identity
         if: steps.key-check.outputs.configured == 'true'
         run: |
@@ -67,10 +89,12 @@ jobs:
         run: |
           # Clean untracked files that might interfere with debuild
           git clean -fdx -e .github
-
-          # Build source package (-S). -sa is a no-op here since this is
-          # a native package (no separate orig tarball) but harmless to keep.
-          debuild -S -sa -k"$MAINTAINER_EMAIL"
+          # Build source package (-S). -d skips the build-dependency check:
+          # a source-only build doesn't compile anything, and the Qt6 build
+          # deps aren't installed on the runner. -sa is a no-op here since
+          # this is a native package (no separate orig tarball).
+          # Sign with the fingerprint of the key we actually imported.
+          debuild -S -sa -d -k"${{ steps.gpg.outputs.fingerprint }}"
 
       - name: Upload to Launchpad PPA via dput
         if: steps.key-check.outputs.configured == 'true'
