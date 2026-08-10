@@ -1,8 +1,0 @@
-#!/usr/bin/make -f
-
-%:
-	dh $@
-
-override_dh_fixperms:
-	dh_fixperms
-	chmod +x debian/unios-desktop-settings/usr/share/unios-desktop-settings/src/initial_desktop_setup.sh
