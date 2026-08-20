@@ -1,0 +1,67 @@
+# Maintainer: Apostolos Chalis <achalis@csd.auth.gr>
+pkgname=unios-desktop-settings
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="UniOS desktop configuration for KDE"
+arch=('any')
+url="https://github.com/open-source-uom/unios-desktop-settings"
+license=('GPL3')
+depends=('breeze' 'breeze-gtk' 'kde-cli-tools')
+source=("git+$url.git")
+sha256sums=('SKIP')
+
+package() {
+  install -d "$pkgdir/usr/share/wallpapers/MyWallpaper/contents/images"
+  install -d "$pkgdir/etc/skel/.config/default/autostart"
+
+  if [ -f "$srcdir/unios-desktop-settings/resources/unios.jpg" ]; then
+    cp "$srcdir/unios-desktop-settings/resources/unios.jpg" \
+       "$pkgdir/usr/share/wallpapers/MyWallpaper/contents/images/unios.jpg"
+  fi
+
+  cat << 'EOF' > "$pkgdir/etc/skel/.config/plasma-org.kde.plasma.desktop-appletsrc"
+[Containments][1][Wallpaper][org.kde.image][General]
+Image=file:///usr/share/wallpapers/MyWallpaper/contents/images/unios.jpg
+EOF
+  cp "$pkgdir/etc/skel/.config/plasma-org.kde.plasma.desktop-appletsrc" \
+     "$pkgdir/etc/skel/.config/default/"
+
+  cat << 'EOF' > "$pkgdir/etc/skel/.config/kdeglobals"
+[KDE]
+LookAndFeelPackage=org.kde.breezedark.desktop
+
+[General]
+ColorScheme=BreezeDark
+
+[Icons]
+Theme=breeze-dark
+
+[KDE Action Restrictions]
+action/help_about_kde=false
+EOF
+  cp "$pkgdir/etc/skel/.config/kdeglobals" \
+     "$pkgdir/etc/skel/.config/default/"
+
+  cat << 'EOF' > "$pkgdir/etc/skel/.config/plasmarc"
+[Theme]
+name=breeze-dark
+EOF
+  cp "$pkgdir/etc/skel/.config/plasmarc" \
+     "$pkgdir/etc/skel/.config/default/"
+
+  # 6. Disable Welcome Screen
+  cat << 'EOF' > "$pkgdir/etc/skel/.config/plasma-welcome-appletsrc"
+[General]
+ShouldShow=false
+EOF
+  cp "$pkgdir/etc/skel/.config/plasma-welcome-appletsrc" \
+     "$pkgdir/etc/skel/.config/default/"
+
+  # 7. Disable KDED Welcome Module
+  cat << 'EOF' > "$pkgdir/etc/skel/.config/kded_plasma_welcomerc"
+[Module]
+autoload=false
+EOF
+  cp "$pkgdir/etc/skel/.config/kded_plasma_welcomerc" \
+     "$pkgdir/etc/skel/.config/default/"
+}
