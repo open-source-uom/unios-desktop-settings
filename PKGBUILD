@@ -128,6 +128,8 @@ fi
 EOF
   chmod 755 "$pkgdir/usr/lib/unios/unios-plasma-setup.sh"
 
+  mkdir -p "$pkgdir/etc/xdg/autostart"
+
   cat << 'EOF' > "$pkgdir/etc/xdg/autostart/unios-plasma-setup.desktop"
 [Desktop Entry]
 Type=Application
@@ -138,15 +140,12 @@ NoDisplay=true
 X-KDE-autostart-phase=2
 EOF
 
-  cat << 'EOF' > "$pkgdir/etc/xdg/autostart/unidesk-welcome.desktop"
+  cat << 'EOF' > "$pkgdir/etc/xdg/autostart/org.kde.plasma-welcome.desktop"
 [Desktop Entry]
 Type=Application
-Name=UniDesk Welcome
-Comment=Welcome to UniOS
-Exec=unidesk
-Icon=unidesk
-Terminal=false
-StartupNotify=true
-Categories=Education;System;
-EOF
+Name=Welcome Center
+Exec=plasma-welcome
+Hidden=true
+X-KDE-autostart-condition=plasmawelcomerc:General:ShowOnStartup:false
+EOF 
 }
