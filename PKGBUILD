@@ -148,4 +148,7 @@ Exec=plasma-welcome
 Hidden=true
 X-KDE-autostart-condition=plasmawelcomerc:General:ShowOnStartup:false
 EOF 
+
+X-KDE-autostart-condition=plasmawelcomerc:General:ShowOnStartup:false
+EOF
 }
