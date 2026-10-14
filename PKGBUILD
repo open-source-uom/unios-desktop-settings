@@ -1,7 +1,7 @@
 # Maintainer: Apostolos Chalis <achalis@csd.auth.gr>
 pkgname=unios-desktop-settings
 pkgver=1.0.0
-pkgrel=9
+pkgrel=10
 pkgdesc="UniOS desktop configuration, artwork, branding and welcome autostart for KDE Plasma"
 arch=('any')
 url="https://github.com/open-source-uom/unios-desktop-settings"
@@ -80,6 +80,18 @@ ColorScheme=BreezeDark
 
 [Icons]
 Theme=unios-breeze-dark
+EOF
+
+  # Splash screen shown after login (replaces the Plasma logo)
+  SPLASH="$pkgdir/usr/share/plasma/look-and-feel/org.unios.splash"
+  install -Dm644 "$RES_DIR/splash/metadata.json" "$SPLASH/metadata.json"
+  install -Dm644 "$RES_DIR/splash/Splash.qml" "$SPLASH/contents/splash/Splash.qml"
+  install -Dm644 "$RES_DIR/logos/unios-icon.png" "$SPLASH/contents/splash/images/unios.png"
+
+  cat << 'EOF' > "$pkgdir/etc/xdg/ksplashrc"
+[KSplash]
+Engine=KSplashQML
+Theme=org.unios.splash
 EOF
 
   cat << 'EOF' > "$pkgdir/etc/xdg/plasmarc"

@@ -1,0 +1,9 @@
+{
+    "KPackageStructure": "Plasma/LookAndFeel",
+    "KPlugin": {
+        "Id": "org.unios.splash",
+        "Name": "UniOS",
+        "Description": "UniOS splash screen",
+        "License": "GPL-3.0-or-later"
+    }
+}
