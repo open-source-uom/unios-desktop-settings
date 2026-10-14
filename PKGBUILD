@@ -1,12 +1,12 @@
 # Maintainer: Apostolos Chalis <achalis@csd.auth.gr>
 pkgname=unios-desktop-settings
 pkgver=1.0.0
-pkgrel=8
+pkgrel=9
 pkgdesc="UniOS desktop configuration, artwork, branding and welcome autostart for KDE Plasma"
 arch=('any')
 url="https://github.com/open-source-uom/unios-desktop-settings"
 license=('GPL-3.0-or-later')
-depends=('breeze' 'breeze-gtk' 'plasma-workspace' 'kde-cli-tools')
+depends=('breeze' 'breeze-gtk' 'breeze-icons' 'plasma-workspace' 'kde-cli-tools')
 
 package() {
   install -d "$pkgdir/usr/share/wallpapers/UniOS/contents/images"
@@ -28,16 +28,33 @@ package() {
   fi
 
   if [ -n "$RES_DIR" ]; then
-    find "$RES_DIR" -type f \( -iname "*.jpg" -o -iname "*.png" -o -iname "*.jpeg" -o -iname "*.webp" \) ! -iname "*logo*" -exec cp {} "$pkgdir/usr/share/wallpapers/UniOS/contents/images/" \;
-    
-    LOGO_FILE=$(find "$RES_DIR" -type f \( -iname "unios.png" -o -iname "*logo*.png" \) | head -n 1)
-    if [ -n "$LOGO_FILE" ]; then
-      install -Dm644 "$LOGO_FILE" "$pkgdir/usr/share/pixmaps/unios.png"
-      install -Dm644 "$LOGO_FILE" "$pkgdir/usr/share/icons/hicolor/256x256/apps/unios.png"
-      install -Dm644 "$LOGO_FILE" "$pkgdir/usr/share/icons/hicolor/256x256/apps/start-here-kde.png"
-      install -Dm644 "$LOGO_FILE" "$pkgdir/usr/share/icons/hicolor/256x256/apps/distributor-logo.png"
-      install -Dm644 "$LOGO_FILE" "$pkgdir/usr/share/icons/hicolor/scalable/apps/start-here-kde.png"
-    fi
+    find "$RES_DIR/wallpapers" -type f \( -iname "*.jpg" -o -iname "*.png" -o -iname "*.jpeg" -o -iname "*.webp" \) -exec cp {} "$pkgdir/usr/share/wallpapers/UniOS/contents/images/" \;
+
+    ICON="$RES_DIR/logos/unios-icon.png"
+    install -Dm644 "$ICON" "$pkgdir/usr/share/pixmaps/unios.png"
+    install -Dm644 "$ICON" "$pkgdir/usr/share/icons/hicolor/256x256/apps/unios.png"
+
+    # UniOS icon theme: Breeze Dark + UniOS launcher/distro logo
+    THEME="$pkgdir/usr/share/icons/unios-breeze-dark"
+    for n in start-here-kde start-here-kde-symbolic start-here-kde-plasma start-here-kde-plasma-symbolic \
+             distributor-logo distributor-logo-symbolic unios; do
+      install -Dm644 "$ICON" "$THEME/apps/256/$n.png"
+    done
+
+    cat << 'EOF' > "$THEME/index.theme"
+[Icon Theme]
+Name=UniOS Breeze Dark
+Comment=Breeze Dark with UniOS branding
+Inherits=breeze-dark,breeze,hicolor
+Directories=apps/256
+
+[apps/256]
+Size=256
+MinSize=16
+MaxSize=512
+Context=Applications
+Type=Scalable
+EOF
   fi
 
   FIRST_WP=$(find "$pkgdir/usr/share/wallpapers/UniOS/contents/images" -type f | head -n 1)
@@ -62,7 +79,7 @@ LookAndFeelPackage=org.kde.breezedark.desktop
 ColorScheme=BreezeDark
 
 [Icons]
-Theme=breeze-dark
+Theme=unios-breeze-dark
 EOF
 
   cat << 'EOF' > "$pkgdir/etc/xdg/plasmarc"
@@ -106,19 +123,6 @@ for (var i = 0; i < des.length; i++) {
     des[i].currentConfigGroup = ["Wallpaper", "org.kde.image", "General"];
     des[i].writeConfig("Image", "file:///usr/share/wallpapers/UniOS/contents/images/default.jpg");
 }
-var pans = panels();
-for (var i = 0; i < pans.length; i++) {
-    var applets = pans[i].widgets();
-    for (var j = 0; j < applets.length; j++) {
-        var a = applets[j];
-        if (a.type === "org.kde.plasma.kickoff" || a.type === "org.kde.plasma.kicker" || a.type === "org.kde.plasma.appmenu") {
-            a.currentConfigGroup = ["General"];
-            a.writeConfig("icon", "/usr/share/pixmaps/unios.png");
-            a.writeConfig("useCustomButtonImage", "true");
-            a.writeConfig("customButtonImage", "/usr/share/pixmaps/unios.png");
-        }
-    }
-}
 ' >/dev/null 2>&1
 fi
 
@@ -146,9 +150,6 @@ Type=Application
 Name=Welcome Center
 Exec=plasma-welcome
 Hidden=true
-X-KDE-autostart-condition=plasmawelcomerc:General:ShowOnStartup:false
-EOF 
-
 X-KDE-autostart-condition=plasmawelcomerc:General:ShowOnStartup:false
 EOF
 }
