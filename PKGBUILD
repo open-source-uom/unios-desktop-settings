@@ -60,6 +60,7 @@ LookAndFeelPackage=org.kde.breezedark.desktop
 
 [General]
 ColorScheme=BreezeDark
+BrowserApplication=firefox.desktop
 
 [Icons]
 Theme=breeze-dark
@@ -68,6 +69,15 @@ EOF
   cat << 'EOF' > "$pkgdir/etc/xdg/plasmarc"
 [Theme]
 name=breeze-dark
+EOF
+
+cat << 'EOF' > "$pkgdir/etc/xdg/mimeapps.list"
+[Default Applications]
+text/html=firefox.desktop
+x-scheme-handler/http=firefox.desktop
+x-scheme-handler/https=firefox.desktop
+x-scheme-handler/about=firefox.desktop
+x-scheme-handler/unknown=firefox.desktop
 EOF
 
   cat << 'EOF' > "$pkgdir/etc/skel/.config/plasma-welcome-appletsrc"
