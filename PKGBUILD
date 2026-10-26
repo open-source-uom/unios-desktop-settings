@@ -1,7 +1,7 @@
 # Maintainer: Apostolos Chalis <achalis@csd.auth.gr>
 pkgname=unios-desktop-settings
 pkgver=1.0.0
-pkgrel=8
+pkgrel=9
 pkgdesc="UniOS desktop configuration, artwork, branding and welcome autostart for KDE Plasma"
 arch=('any')
 url="https://github.com/open-source-uom/unios-desktop-settings"
@@ -15,7 +15,6 @@ package() {
   install -d "$pkgdir/usr/share/icons/hicolor/256x256/apps"
   install -d "$pkgdir/usr/share/icons/hicolor/scalable/apps"
   install -d "$pkgdir/etc/xdg/autostart"
-  install -d "$pkgdir/etc/skel/.config"
   install -d "$pkgdir/usr/lib/unios"
 
   RES_DIR=""
@@ -80,14 +79,19 @@ x-scheme-handler/about=firefox.desktop
 x-scheme-handler/unknown=firefox.desktop
 EOF
 
-  cat << 'EOF' > "$pkgdir/etc/skel/.config/plasma-welcome-appletsrc"
-[General]
-ShouldShow=false
+  # plasma-welcome is launched by its kded module, not by an autostart entry,
+  # so disable the module system-wide (live session and every user).
+  cat << 'EOF' > "$pkgdir/etc/xdg/kded5rc"
+[Module-kded_plasma_welcome]
+autoload=false
 EOF
 
-  cat << 'EOF' > "$pkgdir/etc/skel/.config/kded_plasma_welcomerc"
-[Module]
-autoload=false
+  # Fallback in case the module gets loaded anyway: never treat a login as
+  # first run and never show the post-update page.
+  cat << 'EOF' > "$pkgdir/etc/xdg/plasma-welcomerc"
+[General]
+LastSeenVersion=6.0
+ShowUpdatePage=false
 EOF
 
   cat << 'EOF' > "$pkgdir/usr/lib/unios/unios-plasma-setup.sh"
@@ -148,17 +152,5 @@ Exec=/usr/lib/unios/unios-plasma-setup.sh
 Terminal=false
 NoDisplay=true
 X-KDE-autostart-phase=2
-EOF
-
-  cat << 'EOF' > "$pkgdir/etc/xdg/autostart/org.kde.plasma-welcome.desktop"
-[Desktop Entry]
-Type=Application
-Name=Welcome Center
-Exec=plasma-welcome
-Hidden=true
-X-KDE-autostart-condition=plasmawelcomerc:General:ShowOnStartup:false
-EOF 
-
-X-KDE-autostart-condition=plasmawelcomerc:General:ShowOnStartup:false
 EOF
 }
