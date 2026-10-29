@@ -1,7 +1,7 @@
 # Maintainer: Apostolos Chalis <achalis@csd.auth.gr>
 pkgname=unios-desktop-settings
 pkgver=1.0.0
-pkgrel=9
+pkgrel=10
 pkgdesc="UniOS desktop configuration, artwork, branding and welcome autostart for KDE Plasma"
 arch=('any')
 url="https://github.com/open-source-uom/unios-desktop-settings"
