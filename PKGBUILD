@@ -27,7 +27,7 @@ package() {
   fi
 
   if [ -n "$RES_DIR" ]; then
-    find "$RES_DIR" -type f \( -iname "*.jpg" -o -iname "*.png" -o -iname "*.jpeg" -o -iname "*.webp" \) ! -iname "*logo*" -exec cp {} "$pkgdir/usr/share/wallpapers/UniOS/contents/images/" \;
+    find "$RES_DIR/wallpapers" -type f \( -iname "*.jpg" -o -iname "*.png" -o -iname "*.jpeg" -o -iname "*.webp" \) -exec cp {} "$pkgdir/usr/share/wallpapers/UniOS/contents/images/" \;
     
     LOGO_FILE=$(find "$RES_DIR" -type f \( -iname "unios.png" -o -iname "*logo*.png" \) | head -n 1)
     if [ -n "$LOGO_FILE" ]; then
