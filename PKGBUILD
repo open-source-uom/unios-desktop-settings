@@ -26,7 +26,11 @@ package() {
   install -Dm644 resources/logos/unios.png "$pkgdir/usr/share/icons/hicolor/256x256/apps/unios.png"
   install -Dm644 resources/logos/unios.png "$pkgdir/usr/share/icons/hicolor/256x256/apps/distributor-logo.png"
 
-  install -Dm644 resources/wallpapers/metadata.json "$pkgdir/usr/share/wallpapers/UniOS/metadata.json"
-  find resources/wallpapers -type f \( -iname "*.jpg" -o -iname "*.png" -o -iname "*.jpeg" -o -iname "*.webp" \) \
-    -exec install -Dm644 -t "$pkgdir/usr/share/wallpapers/UniOS/contents/images" {} +
+  # One KDE wallpaper package per directory, images named after their resolution
+  local wp
+  for wp in resources/wallpapers/*/; do
+    wp=$(basename "$wp")
+    install -Dm644 "resources/wallpapers/$wp/metadata.json" "$pkgdir/usr/share/wallpapers/$wp/metadata.json"
+    install -Dm644 -t "$pkgdir/usr/share/wallpapers/$wp/contents/images" "resources/wallpapers/$wp/contents/images/"*
+  done
 }

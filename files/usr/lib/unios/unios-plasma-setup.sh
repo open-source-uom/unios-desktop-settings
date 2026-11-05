@@ -27,7 +27,7 @@ var des = desktops();
 for (var i = 0; i < des.length; i++) {
     des[i].wallpaperPlugin = "org.kde.image";
     des[i].currentConfigGroup = ["Wallpaper", "org.kde.image", "General"];
-    des[i].writeConfig("Image", "file:///usr/share/wallpapers/UniOS/contents/images/default.jpg");
+    des[i].writeConfig("Image", "file:///usr/share/wallpapers/UniOS/");
 }
 var pans = panels();
 for (var i = 0; i < pans.length; i++) {
