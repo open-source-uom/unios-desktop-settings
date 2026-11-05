@@ -1,4 +1,10 @@
 #!/bin/bash
+# Sets the UniOS wallpaper and launcher icon the first time a user logs in
+# to Plasma. After that it leaves a marker and stays out of the way, so the
+# user can change both without them coming back on the next login.
+MARKER="${XDG_STATE_HOME:-$HOME/.local/state}/unios/plasma-setup.done"
+[ -e "$MARKER" ] && exit 0
+
 QDBUS_BIN=""
 if command -v qdbus6 >/dev/null 2>&1; then
   QDBUS_BIN="qdbus6"
@@ -14,6 +20,8 @@ if [ -n "$QDBUS_BIN" ]; then
     sleep 0.5
   done
 
+  # Only mark it done if plasmashell actually ran the script, so a login
+  # where Plasma never answered gets another try next time.
   "$QDBUS_BIN" org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript '
 var des = desktops();
 for (var i = 0; i < des.length; i++) {
@@ -34,5 +42,5 @@ for (var i = 0; i < pans.length; i++) {
         }
     }
 }
-' >/dev/null 2>&1
+' >/dev/null 2>&1 && mkdir -p "${MARKER%/*}" && touch "$MARKER"
 fi
