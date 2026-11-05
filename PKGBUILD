@@ -2,7 +2,7 @@
 # Builds from the local checkout: run makepkg from the repository root.
 pkgname=unios-desktop-settings
 pkgver=1.0.0
-pkgrel=10
+pkgrel=11
 pkgdesc="UniOS desktop configuration, artwork, branding and welcome autostart for KDE Plasma"
 arch=('any')
 url="https://github.com/open-source-uom/unios-desktop-settings"
