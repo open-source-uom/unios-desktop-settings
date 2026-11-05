@@ -39,11 +39,6 @@ package() {
     fi
   fi
 
-  FIRST_WP=$(find "$pkgdir/usr/share/wallpapers/UniOS/contents/images" -type f | head -n 1)
-  if [ -n "$FIRST_WP" ] && [ ! -f "$pkgdir/usr/share/wallpapers/UniOS/contents/images/unios.jpg" ]; then
-    cp "$FIRST_WP" "$pkgdir/usr/share/wallpapers/UniOS/contents/images/unios.jpg"
-  fi
-
   cat << 'EOF' > "$pkgdir/usr/share/wallpapers/UniOS/metadata.json"
 {
     "KPlugin": {
