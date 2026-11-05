@@ -6,7 +6,8 @@ pkgdesc="UniOS desktop configuration, artwork, branding and welcome autostart fo
 arch=('any')
 url="https://github.com/open-source-uom/unios-desktop-settings"
 license=('GPL-3.0-or-later')
-depends=('breeze' 'breeze-gtk' 'plasma-workspace' 'kde-cli-tools')
+depends=('breeze' 'breeze-gtk' 'plasma-workspace' 'kde-cli-tools' 'qt6-tools')
+optdepends=('firefox: the default web browser')
 
 package() {
   install -d "$pkgdir/usr/share/wallpapers/UniOS/contents/images"
