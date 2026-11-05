@@ -7,7 +7,7 @@ pkgdesc="UniOS desktop configuration, artwork, branding and welcome autostart fo
 arch=('any')
 url="https://github.com/open-source-uom/unios-desktop-settings"
 license=('GPL-3.0-or-later')
-depends=('breeze' 'breeze-gtk' 'plasma-workspace' 'kde-cli-tools' 'qt6-tools')
+depends=('breeze' 'breeze-gtk' 'plasma-workspace' 'kde-cli-tools' 'qt6-tools' 'hicolor-icon-theme')
 optdepends=('firefox: the default web browser')
 backup=(
   'etc/xdg/kdeglobals'
