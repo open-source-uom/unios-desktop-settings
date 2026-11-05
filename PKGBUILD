@@ -13,7 +13,6 @@ package() {
   install -d "$pkgdir/usr/share/wallpapers/UniOS"
   install -d "$pkgdir/usr/share/pixmaps"
   install -d "$pkgdir/usr/share/icons/hicolor/256x256/apps"
-  install -d "$pkgdir/usr/share/icons/hicolor/scalable/apps"
   install -d "$pkgdir/etc/xdg/autostart"
   install -d "$pkgdir/usr/lib/unios"
 
@@ -33,9 +32,7 @@ package() {
     if [ -n "$LOGO_FILE" ]; then
       install -Dm644 "$LOGO_FILE" "$pkgdir/usr/share/pixmaps/unios.png"
       install -Dm644 "$LOGO_FILE" "$pkgdir/usr/share/icons/hicolor/256x256/apps/unios.png"
-      install -Dm644 "$LOGO_FILE" "$pkgdir/usr/share/icons/hicolor/256x256/apps/start-here-kde.png"
       install -Dm644 "$LOGO_FILE" "$pkgdir/usr/share/icons/hicolor/256x256/apps/distributor-logo.png"
-      install -Dm644 "$LOGO_FILE" "$pkgdir/usr/share/icons/hicolor/scalable/apps/start-here-kde.png"
     fi
   fi
 
