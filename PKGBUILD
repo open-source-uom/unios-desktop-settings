@@ -9,6 +9,13 @@ url="https://github.com/open-source-uom/unios-desktop-settings"
 license=('GPL-3.0-or-later')
 depends=('breeze' 'breeze-gtk' 'plasma-workspace' 'kde-cli-tools' 'qt6-tools')
 optdepends=('firefox: the default web browser')
+backup=(
+  'etc/xdg/kdeglobals'
+  'etc/xdg/kded5rc'
+  'etc/xdg/mimeapps.list'
+  'etc/xdg/plasma-welcomerc'
+  'etc/xdg/plasmarc'
+)
 
 package() {
   cd "$startdir"
