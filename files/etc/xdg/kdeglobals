@@ -1,0 +1,9 @@
+[KDE]
+LookAndFeelPackage=org.kde.breezedark.desktop
+
+[General]
+ColorScheme=BreezeDark
+BrowserApplication=firefox.desktop
+
+[Icons]
+Theme=breeze-dark
