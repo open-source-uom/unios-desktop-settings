@@ -1,6 +1,4 @@
-debian/files
-debian/.debhelper/
-debian/debhelper-build-stamp
-debian/unios-desktop-settings/
-debian/*.substvars
-debian/*.log
+# makepkg output
+/src/
+/pkg/
+*.pkg.tar.*

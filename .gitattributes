@@ -1,0 +1,2 @@
+# Everything here ends up on Arch: a CRLF shebang or desktop entry breaks there
+* text=auto eol=lf
