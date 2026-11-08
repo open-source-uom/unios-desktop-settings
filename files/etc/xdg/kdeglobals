@@ -3,6 +3,9 @@ LookAndFeelPackage=org.kde.breezedark.desktop
 
 [General]
 ColorScheme=BreezeDark
+# UniOS purple (#ae73a6) as the accent on top of Breeze Dark
+AccentColor=174,115,166
+LastUsedCustomAccentColor=174,115,166
 BrowserApplication=firefox.desktop
 
 [Icons]

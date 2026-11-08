@@ -8,7 +8,7 @@ More in the [docs](https://docs.unios-project.eu/unios-desktop-settings/).
 
 | Path | What it is |
 | --- | --- |
-| `/etc/xdg/kdeglobals`, `/etc/xdg/plasmarc` | Breeze Dark look and feel, colors, icons and Plasma theme, Firefox as the browser |
+| `/etc/xdg/kdeglobals`, `/etc/xdg/plasmarc` | Breeze Dark look and feel, colors, icons and Plasma theme with the UniOS purple (`#ae73a6`) accent, Firefox as the browser |
 | `/etc/xdg/mimeapps.list` | Firefox as the default for web links |
 | `/etc/xdg/kded5rc`, `/etc/xdg/plasma-welcomerc` | keep the Plasma Welcome Center from starting |
 | `/etc/xdg/autostart/unios-plasma-setup.desktop` | runs the setup script when a user logs in to Plasma |
