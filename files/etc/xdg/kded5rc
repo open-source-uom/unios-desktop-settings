@@ -1,0 +1,4 @@
+# plasma-welcome is launched by its kded module, not by an autostart entry,
+# so disable the module system-wide (live session and every user).
+[Module-kded_plasma_welcome]
+autoload=false

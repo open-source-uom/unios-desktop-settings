@@ -1,0 +1,5 @@
+# Fallback in case the kded module gets loaded anyway: never treat a login
+# as first run and never show the post-update page.
+[General]
+LastSeenVersion=6.0
+ShowUpdatePage=false

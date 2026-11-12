@@ -1,0 +1,38 @@
+name: Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: archlinux:base-devel
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install tools
+        run: pacman -Syu --noconfirm --needed shellcheck desktop-file-utils jq namcap
+
+      - name: Lint
+        run: |
+          shellcheck files/usr/lib/unios/unios-plasma-setup.sh
+          desktop-file-validate files/etc/xdg/autostart/unios-plasma-setup.desktop
+          for f in resources/wallpapers/*/metadata.json; do jq empty "$f"; done
+
+      # makepkg refuses to run as root. The runtime dependencies aren't
+      # needed to build, so skip the dependency check.
+      - name: Build package
+        run: |
+          useradd -m builder
+          chown -R builder .
+          sudo -u builder makepkg --nodeps --noconfirm
+
+      # namcap can't see qdbus6 being called from the setup script and
+      # flags dependencies like that, so report without failing the build.
+      - name: namcap
+        continue-on-error: true
+        run: namcap ./*.pkg.tar.zst
